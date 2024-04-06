@@ -1,0 +1,156 @@
+﻿@{
+    Layout = null;
+    var list = ViewBag.datalist;
+    var HospitalINF = ViewBag.Hospitaldatalist;
+}
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
+<script type="text/javascript">
+var subCatgSelector = $("#SubCategory");
+$("#TimeSheetEntry_Category").change(function () {
+$.getJSON("?handler=SubCategories&category=" + $(this).val()).done(function (options) {
+    subCatgSelector.empty();
+    var currVal = $("#TimeSheetEntry_SubCategory").val();
+    for (var i = 0; i < options.length; i++) {
+        var option = options[i];
+        var opEl = $("<option></option>").attr("value", option).text(option);
+        if (currVal == option) opEl.attr("selected", "selected");
+        opEl.appendTo(subCatgSelector);
+    }
+});
+}).change();
+subCatgSelector.change(function () {
+$("#TimeSheetEntry_SubCategory").val($(this).val());
+});
+</script>
+</head>
+<body>
+
+
+
+<table>
+    <tr>
+        <td>
+            Make:
+        </td>
+        <td>
+            <asp:DropDownList ID="ddlMake" Width="200" runat="server" AutoPostBack="false" onchange="ddl_changed(this)" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Model:
+        </td>
+        <td>
+            <asp:DropDownList ID="ddlModel" Width="200" runat="server" AutoPostBack="false" onchange="ddl_changed(this)" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Color:
+        </td>
+        <td>
+            <asp:DropDownList ID="ddlColor" Width="200" runat="server" AutoPostBack="false" onchange="DisplayResult()" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:Button ID="btnReset" runat="server" Text="Reset" />
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    function pageLoad()
+    {
+        // call a Web service method with no parameters and the user context.
+        KB_CascadingDDL_VB.WebService.GetMakeValue(SucceededCallbackWithContext, FailedCallback, "fillMake");
+    }
+
+    // Event handler for ddlMake and ddlModel.
+    // This function calls a Web service method
+    // passing simple type parameters and the user context.
+    function ddl_changed(sender)
+    {
+        // This initiates the call to the server-side method in your code-behind
+        // The parameters are as follows:
+        // 1st : Specify all the parameters expected by your code-behind method
+        //      (in this case there are 2: parentControl's ID, parentControl's selected text)
+        // 2nd : Specify a callback method when the call succeeds
+        // 3rd : Specify a callback method when the call fails(optional)
+        // 4th : Specify a user context object (option - not shown)
+        //      (in this case we need to assign the parentControl's ID as the user context)
+        KB_CascadingDDL_VB.WebService.GetChildValue(sender.id, sender[sender.selectedIndex].text,
+        SucceededCallbackWithContext, FailedCallback, sender.id);
+    }
+
+    // This is the callback function called if the
+    // Web service succeeded. It accepts the result
+    // object, the user context, and the method name as
+    // parameters.
+    function SucceededCallbackWithContext(result, userContext) {
+
+        if (userContext == "fillMake") {
+            //fill the Make
+            var ddl = $get('ddlMake');
+        } else if (userContext == "ddlMake") {
+            // fill the Model
+            var ddl = $get('ddlModel');
+            $get('ddlColor').options.length = 0;
+        } else if (userContext == "ddlModel") {
+            // fill the Color
+            var ddl = $get('ddlColor');
+        }
+        // clear the options
+        ddl.options.length = 0;
+        if (result)
+        {
+            var i = 0;
+            for (var item in result)
+            {
+                // item is the key, result[item] is the value
+                ddl.options.add(new Option(result[item], item));
+                i++;
+            }
+        } else {
+            alert("Invalid! Please reset the selection!");
+            $get(userContext).focus();
+        }
+    }
+
+    // This is the callback function called if the
+    // Web service failed. It accepts the error object
+    // as a parameter.
+    function FailedCallback(error)
+    {
+        if (error)
+        {
+            alert(error.get_message());
+        }
+        else
+            alert("An unexpeceted error occurred");
+    }
+
+    //This the function to show the three DropDownLists'selection
+    function DisplayResult()
+    {
+        $get("aResult").innerHTML = "You have selected a " +
+        $get("ddlMake")[$get("ddlMake").selectedIndex].text + "," +
+        $get("ddlModel")[$get("ddlModel").selectedIndex].text + "," +
+        $get("ddlColor")[$get("ddlColor").selectedIndex].text + " car!";
+    }
+</script>
+<a id="aResult" />
+
+    <form style="margin-left:10px;" method="post" action="/Home/HospitalComment">
+        <select name="SelectResult">
+            @for (int i = 0; i < HospitalINF.Count; i++)
+            {   
+                <option>@HospitalINF[i].Hospital_Name.ToString()</option>
+
+            }
+        </select>
+        <button type="submit" class="btn btn-primary" >確定</button>
+    </form>
+</body>

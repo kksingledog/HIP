@@ -1,0 +1,18 @@
+﻿@{
+    Layout = null;
+    var list = ViewBag.datalist;
+}
+
+<div>
+    <h1 class="textcolor">存款</h1>
+    
+</div>
+@for (int i = 0; i < list.Count; i++)
+{
+    <div>
+        @list[i].News_Href.ToString()
+        @list[i].News_Titles.ToString()
+        @list[i].News_Times.ToString()
+        @list[i].News_Artical.ToString()
+    </div>
+}

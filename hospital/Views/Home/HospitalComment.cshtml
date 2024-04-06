@@ -1,0 +1,69 @@
+﻿@{
+    Layout = null;
+    var list = ViewBag.datalist;
+    var HospitalINF = ViewBag.Hospitaldatalist;
+}
+
+<div>
+    <h1 class="textcolor">醫院評論資訊</h1>
+    
+</div>
+@for (int i = 0; i < list.Count; i++)
+{
+    <div>
+        @list[i].HospitalComment_HospitalName.ToString()
+        @list[i].HospitalComment_Name.ToString()
+        @list[i].HospitalComment_Time.ToString()
+        @list[i].HospitalComment_Star.ToString()
+        @list[i].HospitalComment_Positive.ToString()
+        @list[i].HospitalComment_Comment.ToString()
+
+
+    </div>
+}
+
+
+
+
+<form style="margin-left:10px;" method="post" action="/Home/HospitalComment">
+    <div>
+        <span style="color:red">@ViewBag.errmsg</span>
+    </div>
+    <div class="form-group">
+        <label for="HospitalComment_Comment" >HospitalComment_Comment</label>
+        <input type="text" class="form-control" id="comment" name="HospitalComment_Comment" placeholder="comment" required="required">
+    </div>
+    <div class="form-group">
+        <label for="HospitalComment_HospitalName" >HospitalComment_HospitalName</label>
+        <input type="text" class="form-control" id="HospitalName" name="HospitalComment_HospitalName" placeholder="comment" required="required">
+    </div>
+    <div class="form-group">
+        <label for="HospitalComment_Name" >HospitalComment_Name</label>
+        <input type="text" class="form-control" id="Name" name="HospitalComment_Name" placeholder="comment" required="required">
+    </div>
+    <div class="form-group">
+        <label for="HospitalComment_Star" >HospitalComment_Star</label>
+        <input type="text" class="form-control" id="Star" name="HospitalComment_Star" placeholder="comment" required="required">
+    </div>
+    <div class="form-group">
+        <label for="HospitalComment_Time" >HospitalComment_Time</label>
+
+        <input type="text" class="form-control" id="Time" name="HospitalComment_Time" placeholder="comment" required="required">
+    </div>
+    <div class="form-group">
+        <label for="HospitalComment_Positive" >HospitalComment_Positive</label>
+        <input type="text" class="form-control" id="Positive" name="HospitalComment_Positive" placeholder="comment" required="required">
+    </div>
+    
+    <select name="SelectResult">
+    @for (int i = 0; i < HospitalINF.Count; i++)
+    {   
+        <option>@HospitalINF[i].Hospital_Name.ToString()</option>
+
+    }
+    </select>
+    <button type="submit" class="btn btn-primary" >確定</button>
+</form>
+ <span style="color:black">Select : @TempData["select"]</span>
+
+
